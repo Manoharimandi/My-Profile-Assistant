@@ -1,5 +1,7 @@
 import os
 import logging
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from groq import Groq
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
@@ -9,11 +11,10 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "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")
-TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "8839065836:AAEtW9_-8oDJNDrmnRfBms7ykeXs4lyJBb0")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
 groq_client = Groq(api_key=GROQ_API_KEY)
-
 chat_histories = {}
 
 SYSTEM_INSTRUCTIONS = """
@@ -107,9 +108,7 @@ async def handle_chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
             max_tokens=300,
         )
         answer = completion.choices[0].message.content.strip()
-        
         chat_histories[chat_id].append({"role": "assistant", "content": answer})
-        
         await update.message.reply_text(answer)
     except Exception as e:
         print(f"[Groq Execution Error]: {e}")
@@ -125,10 +124,22 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "Feel free to ask me anything about my background, work experience, education, skills, or projects!"
     )
 
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"OK")
+
+def run_health_check_server():
+    port = int(os.environ.get("PORT", 8080))
+    server = HTTPServer(("0.0.0.0", port), HealthCheckHandler)
+    server.serve_forever()
+
 if __name__ == '__main__':
+    threading.Thread(target=run_health_check_server, daemon=True).start()
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_chat))
 
-    print("Manohar's Personal AI Proxy is active! Press Ctrl+C to stop.")
+    print("Manohar's Personal AI Proxy is active!")
     app.run_polling()
