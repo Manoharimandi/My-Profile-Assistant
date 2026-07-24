@@ -1,6 +1,6 @@
 # 🤖 Interactive AI Profile Proxy
 
-An intelligent, real-time Telegram AI bot that acts as a 24/7 personal recruiter assistant for **Imandi Satya Sai Manohar**. Built using **Python**, **Groq API (Llama 3.1)**, **python-telegram-bot**, and hosted on **Render**.
+An intelligent, real-time Telegram AI bot that acts as a 24/7 personal profile assistant for **Imandi Satya Sai Manohar**. Built using **Python**, **Groq API (Llama 3.1)**, **python-telegram-bot**, and hosted on **Render**.
 
 ---
 
