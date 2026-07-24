@@ -1,0 +1,4 @@
+cat << 'EOF' > requirements.txt
+groq
+python-telegram-bot
+EOF
