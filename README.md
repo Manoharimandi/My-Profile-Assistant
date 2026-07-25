@@ -28,6 +28,7 @@ Click above or search for **`@My_ProfileAssistant_bot`** on Telegram to ask abou
 * **Bot Framework:** `python-telegram-bot`
 * **Concurrency:** `asyncio` & Python `threading` (HTTP Health Checker)
 * **Hosting:** Render Web Service
+* **Uptime Monitoring:** `cron-job.org`
 
 ---
 
