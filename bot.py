@@ -83,7 +83,7 @@ ACTUAL TECHNICAL SKILLS (ONLY THESE):
 
 PROJECTS:
 1. Amazon Product Review Sentiment Analysis (Data Science / NLP): https://github.com/Manoharimandi/Amazon-Product-Review-Sentiment-Analysis
-2. Medi-Bot (ML-Based Medical Chatbot): https://github.com/Manoharimandi/Medi-Bot
+2. Medi-Bot (ML-Based Medical Chatbot)
 3. AI Resume Analyzer & ATS Score Checker: https://github.com/Manoharimandi/AI-Resume-analyzer
 """
 
