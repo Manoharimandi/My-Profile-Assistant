@@ -1,13 +1,16 @@
-from dotenv import load_dotenv
-load_dotenv()
 import os
 import logging
-import threading
-from http.server import HTTPServer, BaseHTTPRequestHandler
+import asyncio
+from aiohttp import web
+from dotenv import load_dotenv
 from groq import Groq
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
+# Load environment variables
+load_dotenv()
+
+# Setup logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
@@ -16,6 +19,7 @@ logging.basicConfig(
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
+# Initialize Groq client
 groq_client = Groq(api_key=GROQ_API_KEY)
 chat_histories = {}
 
@@ -126,22 +130,46 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "Feel free to ask me anything about my background, work experience, education, skills, or projects!"
     )
 
-class HealthCheckHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(b"OK")
+# Health check handler for Render
+async def health_check(request):
+    return web.Response(text="OK")
 
-def run_health_check_server():
+async def start_health_server():
+    app = web.Application()
+    app.router.add_get('/', health_check)
+    app.router.add_get('/health', health_check)
     port = int(os.environ.get("PORT", 8080))
-    server = HTTPServer(("0.0.0.0", port), HealthCheckHandler)
-    server.serve_forever()
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', port)
+    await site.start()
+    print(f"✅ Health check server successfully running on port {port}")
 
-if __name__ == '__main__':
-    threading.Thread(target=run_health_check_server, daemon=True).start()
+async def main():
+    # Start health check server concurrently
+    asyncio.create_task(start_health_server())
+    
+    # Start Telegram bot
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_chat))
 
-    print("Manohar's Personal AI Proxy is active!")
-    app.run_polling()
+    print("🤖 Manohar's Personal AI Proxy is starting...")
+    await app.run_polling()
+
+if __name__ == '__main__':
+    # 🚀 THE GOLDEN FIX: Prevent dual-instance conflicts on Render
+    # Render starts the app multiple times. We only want the "primary" one (instance 0) to run the bot.
+    render_instance_id = os.environ.get("RENDER_INSTANCE_ID", "0")
+    if render_instance_id == "0":
+        try:
+            asyncio.run(main())
+        except KeyboardInterrupt:
+            pass
+        except RuntimeError as e:
+            if "Event loop is closed" in str(e):
+                pass
+            else:
+                raise e
+    else:
+        print(f"Skipping bot initialization for instance {render_instance_id} to prevent conflicts.")
