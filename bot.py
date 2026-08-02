@@ -1,7 +1,6 @@
 import os
 import logging
 import asyncio
-import sys
 from aiohttp import web
 from dotenv import load_dotenv
 from groq import Groq
@@ -21,6 +20,11 @@ GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
 # Initialize Groq client
+if not GROQ_API_KEY:
+    print("❌ ERROR: GROQ_API_KEY is missing. Check Render Environment Variables.")
+if not TELEGRAM_TOKEN:
+    print("❌ ERROR: TELEGRAM_TOKEN is missing. Check Render Environment Variables.")
+
 groq_client = Groq(api_key=GROQ_API_KEY)
 chat_histories = {}
 
@@ -146,22 +150,17 @@ async def start_health_server():
     await site.start()
     print(f"✅ Health check server successfully running on port {port}")
 
-async def main():
-    # Start health check server concurrently
-    asyncio.create_task(start_health_server())
-    
-    # Start Telegram bot
-    app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_chat))
-
-    print("🤖 Manohar's Personal AI Proxy is starting...")
-    await app.run_polling()
-
+# Simplified main entry point
 if __name__ == '__main__':
-    # The absolute simplest way to run it. 
-    # Render will run this. The health check handles the keep-alive.
+    print("🤖 Starting Manohar's Personal AI Proxy...")
     try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        pass
+        # Create and run the bot application
+        application = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
+        application.add_handler(CommandHandler("start", start))
+        application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_chat))
+        
+        # Use run_polling() which handles the loop internally to avoid conflicts with aiohttp
+        application.run_polling()
+        
+    except Exception as e:
+        print(f"❌ Fatal Error: {e}")
