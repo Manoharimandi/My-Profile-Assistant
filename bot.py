@@ -1,5 +1,7 @@
 import os
 import logging
+import asyncio
+import threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from dotenv import load_dotenv
 from groq import Groq
@@ -14,9 +16,16 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
+logging.getLogger('httpx').setLevel(logging.WARNING)
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
+
+# Initialize Groq client
+if not GROQ_API_KEY:
+    print("❌ ERROR: GROQ_API_KEY is missing.")
+if not TELEGRAM_TOKEN:
+    print("❌ ERROR: TELEGRAM_TOKEN is missing.")
 
 groq_client = Groq(api_key=GROQ_API_KEY)
 chat_histories = {}
@@ -128,27 +137,30 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "Feel free to ask me anything about my background, work experience, education, skills, or projects!"
     )
 
-# Health check server (runs as a daemon thread)
-def run_health_server():
-    port = int(os.environ.get("PORT", 10000))
-    server = HTTPServer(("0.0.0.0", port), HealthCheckHandler)
-    print(f"✅ Health check server running on port {port}")
-    server.serve_forever()
-
+# Simple HTTP health check server to keep Render happy
 class HealthCheckHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.end_headers()
         self.wfile.write(b"OK")
 
+def run_health_check_server():
+    port = int(os.environ.get("PORT", 8080))
+    server = HTTPServer(("0.0.0.0", port), HealthCheckHandler)
+    print(f"✅ Health check server is running on port {port}")
+    server.serve_forever()
+
 if __name__ == '__main__':
-    import threading
-    # Start the health check in a background thread
-    threading.Thread(target=run_health_server, daemon=True).start()
+    print("🤖 Starting Manohar's Personal AI Proxy...")
     
-    print("🟢 Starting Manohar's Personal AI Proxy...")
-    # Start the bot
+    # Start the health check server in a background thread
+    health_thread = threading.Thread(target=run_health_check_server, daemon=True)
+    health_thread.start()
+    
+    # Start the Telegram bot using the polling method
     application = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_chat))
+    
+    # This runs forever, keeping the service alive
     application.run_polling()
