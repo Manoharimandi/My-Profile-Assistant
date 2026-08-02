@@ -1,7 +1,8 @@
 import os
 import logging
 import asyncio
-from aiohttp import web
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from dotenv import load_dotenv
 from groq import Groq
 from telegram import Update
@@ -21,9 +22,9 @@ TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
 # Initialize Groq client
 if not GROQ_API_KEY:
-    print("❌ ERROR: GROQ_API_KEY is missing. Check Render Environment Variables.")
+    print("❌ ERROR: GROQ_API_KEY is missing.")
 if not TELEGRAM_TOKEN:
-    print("❌ ERROR: TELEGRAM_TOKEN is missing. Check Render Environment Variables.")
+    print("❌ ERROR: TELEGRAM_TOKEN is missing.")
 
 groq_client = Groq(api_key=GROQ_API_KEY)
 chat_histories = {}
@@ -135,32 +136,30 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "Feel free to ask me anything about my background, work experience, education, skills, or projects!"
     )
 
-# Health check handler for Render
-async def health_check(request):
-    return web.Response(text="OK")
+# Simple HTTP health check server to keep Render happy
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"OK")
 
-async def start_health_server():
-    app = web.Application()
-    app.router.add_get('/', health_check)
-    app.router.add_get('/health', health_check)
+def run_health_check_server():
     port = int(os.environ.get("PORT", 8080))
-    runner = web.AppRunner(app)
-    await runner.setup()
-    site = web.TCPSite(runner, '0.0.0.0', port)
-    await site.start()
-    print(f"✅ Health check server successfully running on port {port}")
+    server = HTTPServer(("0.0.0.0", port), HealthCheckHandler)
+    print(f"✅ Health check server is running on port {port}")
+    server.serve_forever()
 
-# Simplified main entry point
 if __name__ == '__main__':
     print("🤖 Starting Manohar's Personal AI Proxy...")
-    try:
-        # Create and run the bot application
-        application = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
-        application.add_handler(CommandHandler("start", start))
-        application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_chat))
-        
-        # Use run_polling() which handles the loop internally to avoid conflicts with aiohttp
-        application.run_polling()
-        
-    except Exception as e:
-        print(f"❌ Fatal Error: {e}")
+    
+    # Start the health check server in a background thread
+    health_thread = threading.Thread(target=run_health_check_server, daemon=True)
+    health_thread.start()
+    
+    # Start the Telegram bot using the polling method
+    application = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_chat))
+    
+    # This runs forever, keeping the service alive
+    application.run_polling()
