@@ -108,10 +108,10 @@ async def handle_chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
     try:
         completion = groq_client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="GROQ_MODEL", "openai/gpt-oss-20b",
             messages=messages,
             temperature=0.0,
-            max_tokens=300,
+            max_tokens=1021,
         )
         answer = completion.choices[0].message.content.strip()
         chat_histories[chat_id].append({"role": "assistant", "content": answer})
