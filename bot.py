@@ -108,7 +108,7 @@ async def handle_chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
     try:
         completion = groq_client.chat.completions.create(
-            model="GROQ_MODEL", "openai/gpt-oss-20b",
+            model=os.environ.get("GROQ_MODEL", "openai/gpt-oss-20b"),
             messages=messages,
             temperature=0.0,
             max_tokens=1021,
