@@ -70,26 +70,26 @@ LINKEDIN: https://www.linkedin.com/in/imandi-satya-sai-manohar/
 GITHUB PROFILE: https://github.com/Manoharimandi
 
 💼PRIMARY WORK EXPERIENCE:
-• Data Annotation Intern | Scry Analytics (Jul 2026 – Present): Evaluating voice chatbot responses for accuracy and conversational quality, identifying failure patterns, and performing QA for AI model performance.
+💼• Data Annotation Intern | Scry Analytics (Jul 2026 – Present): Evaluating voice chatbot responses for accuracy and conversational quality, identifying failure patterns, and performing QA for AI model performance.
 
 🎓EDUCATION HISTORY:
-• B.Tech in CSE (IoT Specialization): Raghu Engineering College, Visakhapatnam (2020 – 2024) | CGPA: 6.83
+🎓• B.Tech in CSE (IoT Specialization): Raghu Engineering College, Visakhapatnam (2020 – 2024) | CGPA: 6.83
 • Intermediate (Class XII): Sri Chaitanya Junior College, AP (2018 – 2020) | CGPA: 6.75
 • Class X (SSC): Sri Chaitanya Techno School, AP (2017 – 2018) | CGPA: 9.8
 
 📜CERTIFICATIONS:
-• Data Science Certification from ExcelR (Mar 2025)
+📜• Data Science Certification from ExcelR (Mar 2025)
 • Power BI Certification from ExcelR 
 • Data Science From Nasscom:https://inspiration-fun-7467.my.salesforce-sites.com/CDACcertificatePage2?id=a02Vy00001RZkRUIA1
 
 🛠️ACTUAL TECHNICAL SKILLS (ONLY THESE):
-• Data & Analytics: Data Analytics, Exploratory Data Analysis (EDA), Data Visualization, Statistical Analysis
+🛠️• Data & Analytics: Data Analytics, Exploratory Data Analysis (EDA), Data Visualization, Statistical Analysis
 • Machine Learning & NLP: Machine Learning, Natural Language Processing (NLP), Scikit-learn, Random Forest, Logistic Regression, TF-IDF, Sentence-Transformers
 • Programming & SQL: Python, SQL (MySQL), HTML
 • BI & Tools: Microsoft Power BI, Dashboards, Pandas, NumPy, Matplotlib, Seaborn, Plotly, NLTK, Streamlit
 
 🚀PROJECTS:
-1. Amazon Product Review Sentiment Analysis (Data Science / NLP): https://github.com/Manoharimandi/Amazon-Product-Review-Sentiment-Analysis
+🚀1. Amazon Product Review Sentiment Analysis (Data Science / NLP): https://github.com/Manoharimandi/Amazon-Product-Review-Sentiment-Analysis
 2. AI Resume Analyzer & ATS Score Checker: https://github.com/Manoharimandi/AI-Resume-analyzer
 3. Global-Clustering Analysis:https://github.com/Manoharimandi/Global-Clustering-Project
 4. AI Profile Assistant (24/7):https://github.com/Manoharimandi/My-Profile-Assistant
