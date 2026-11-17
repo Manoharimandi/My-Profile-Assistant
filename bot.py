@@ -80,7 +80,7 @@ EDUCATION HISTORY:
 CERTIFICATIONS:
 • Data Science Certification from ExcelR (Mar 2025)
 • Power BI Certification from ExcelR 
-• Data Science From Nasscom
+• Data Science From Nasscom:https://inspiration-fun-7467.my.salesforce-sites.com/CDACcertificatePage2?id=a02Vy00001RZkRUIA1
 
 ACTUAL TECHNICAL SKILLS (ONLY THESE):
 • Data & Analytics: Data Analytics, Exploratory Data Analysis (EDA), Data Visualization, Statistical Analysis
