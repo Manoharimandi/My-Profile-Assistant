@@ -78,8 +78,9 @@ EDUCATION HISTORY:
 • Class X (SSC): Sri Chaitanya Techno School, AP (2017 – 2018) | CGPA: 9.8
 
 CERTIFICATIONS:
-• Data Science & AI Certification from ExcelR (Mar 2025)
-• Power BI Certification from Simplilearn (Feb 2026)
+• Data Science Certification from ExcelR (Mar 2025)
+• Power BI Certification from ExcelR 
+• Data Science From Nasscom
 
 ACTUAL TECHNICAL SKILLS (ONLY THESE):
 • Data & Analytics: Data Analytics, Exploratory Data Analysis (EDA), Data Visualization, Statistical Analysis
@@ -90,7 +91,8 @@ ACTUAL TECHNICAL SKILLS (ONLY THESE):
 PROJECTS:
 1. Amazon Product Review Sentiment Analysis (Data Science / NLP): https://github.com/Manoharimandi/Amazon-Product-Review-Sentiment-Analysis
 2. AI Resume Analyzer & ATS Score Checker: https://github.com/Manoharimandi/AI-Resume-analyzer
-3.Global-Clustering Analysis:https://github.com/Manoharimandi/Global-Clustering-Project
+3. Global-Clustering Analysis:https://github.com/Manoharimandi/Global-Clustering-Project
+4. AI Profile Assistant (24/7):https://github.com/Manoharimandi/My-Profile-Assistant
 """
 
 async def handle_chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
